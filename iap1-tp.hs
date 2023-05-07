@@ -37,15 +37,28 @@ likesDePublicacion (_, _, us) = us
 -- Ejercicios
 
 nombresDeUsuarios :: RedSocial -> [String]
-nombresDeUsuarios = undefined
+nombresDeUsuarios ([], _, _) = []
+nombresDeUsuarios (((_, nombre):xs), _, _) | nombrePertenece nombre xs = nombresDeUsuarios (xs, [], [])
+                                           | otherwise = nombre : nombresDeUsuarios (xs, [], [])
+--Indica si un nombre de usuario esta contenido en una lista de usuarios
+nombrePertenece :: String -> [Usuario] -> Bool
+nombrePertenece _ [] = False
+nombrePertenece nombre ((_,y):xs) = nombre == y || nombrePertenece nombre xs
 
--- describir qué hace la función: .....
+-- describir qué hace la función: Dada una Red Social, lee la lista de los usuarios y devuelve los nombres
+-- Si hay algun nombre repetido, lo devuelve una unica vez en la lista.
 amigosDe :: RedSocial -> Usuario -> [Usuario]
-amigosDe = undefined
+amigosDe (_, [], _) _ = []
+amigosDe (_, (pu, su) : xs, _) u | pu == u = su : amigosDe ([], xs, []) u
+                                 | su == u = pu : amigosDe ([], xs, []) u
+                                 | otherwise = amigosDe ([], xs, []) u
 
--- describir qué hace la función: .....
+-- describir qué hace la función: Dada una Red Social y un usuario, lee la lista de las relaciones y devuelve
+-- todos los usuarios que estan en una relacion con el usuario ingresado.
 cantidadDeAmigos :: RedSocial -> Usuario -> Int
-cantidadDeAmigos = undefined
+cantidadDeAmigos (_, [], _) _ = 0
+cantidadDeAmigos (_, (pu, su) : xs, _) u | pu == u || su == u = 1 + cantidadDeAmigos ([], xs, []) u
+                                         | otherwise = cantidadDeAmigos ([], xs, []) u
 
 -- describir qué hace la función: .....
 usuarioConMasAmigos :: RedSocial -> Usuario
@@ -53,7 +66,8 @@ usuarioConMasAmigos = undefined
 
 -- describir qué hace la función: .....
 estaRobertoCarlos :: RedSocial -> Bool
-estaRobertoCarlos = undefined
+estaRobertoCarlos (_, [], _) = False
+estaRobertoCarlos (u:us, relaciones, _) = cantidadDeAmigos ([], relaciones, []) u >= 1000000 || estaRobertoCarlos (us, relaciones, [])
 
 -- describir qué hace la función: .....
 publicacionesDe :: RedSocial -> Usuario -> [Publicacion]
