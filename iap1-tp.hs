@@ -94,6 +94,7 @@ lesGustanLasMismasPublicaciones :: RedSocial -> Usuario -> Usuario -> Bool
 lesGustanLasMismasPublicaciones red u1 u2 = (publicacionesQueLeGustanA red u1) == (publicacionesQueLeGustanA red u2)
 
 -- describir qué hace la función: .....
+--Use us para representar la secuencia de usuarios en vez de (x : xs) para poder contemplar el caso de que sea vacia
 tieneUnSeguidorFiel :: RedSocial -> Usuario -> Bool
 tieneUnSeguidorFiel (_, _, []) _ = False
 tieneUnSeguidorFiel (_, _, ((u1, _, us) : ps)) u | u1 == u && us == [] = False
