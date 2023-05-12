@@ -94,13 +94,18 @@ lesGustanLasMismasPublicaciones :: RedSocial -> Usuario -> Usuario -> Bool
 lesGustanLasMismasPublicaciones red u1 u2 = (publicacionesQueLeGustanA red u1) == (publicacionesQueLeGustanA red u2)
 
 -- describir qué hace la función: .....
---Use us para representar la secuencia de usuarios en vez de (x : xs) para poder contemplar el caso de que sea vacia
 tieneUnSeguidorFiel :: RedSocial -> Usuario -> Bool
 tieneUnSeguidorFiel (_, _, []) _ = False
 tieneUnSeguidorFiel (_, _, ((u1, _, us) : ps)) u | u1 == u && us == [] = False
-                                                 | u1 == u && publicacionesDe ([], [], (u1, [], us) : ps) u1 == publicacionesQueLeGustanA ([], [], (u1, [], us) : ps) (head us) = True
+                                                 | u1 == u && (head us) == u1 = tieneUnSeguidorFiel ([], [], ((u1, [], (tail us)) : ps)) u
+                                                 | u1 == u && publicacionesDe ([], [], (u1, [], us) : ps) u1 == esSeguidorFiel  = True
                                                  | otherwise = tieneUnSeguidorFiel ([], [], ((u1, [], (tail us)) : ps)) u1
+                                                 where esSeguidorFiel = publicacionesQueLeGustanA ([], [], publicacionesDe ([], [], ((u1, [], us) : ps)) (head us)) u
 
 -- describir qué hace la función: .....
 existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
-existeSecuenciaDeAmigos = undefined
+existeSecuenciaDeAmigos (_, [], _) _ _ = False
+existeSecuenciaDeAmigos (_, ((u1, u2) : rs), _) inu outu | (u1, u2) == (inu, outu) || (u1, u2) == (outu, inu) = True
+                                                         | u1 == inu && existeSecuenciaDeAmigos ([], rs, []) u2 outu = True
+                                                         | u2 == inu && existeSecuenciaDeAmigos ([], rs, []) u1 outu = True
+                                                         | otherwise = existeSecuenciaDeAmigos ([], rs ++ [(u1, u2)], []) inu outu
