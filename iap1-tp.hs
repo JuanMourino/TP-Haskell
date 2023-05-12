@@ -38,12 +38,13 @@ likesDePublicacion (_, _, us) = us
 
 nombresDeUsuarios :: RedSocial -> [String]
 nombresDeUsuarios ([], _, _) = []
-nombresDeUsuarios (((_, nombre):xs), _, _) | nombrePertenece nombre xs = nombresDeUsuarios (xs, [], [])
-                                           | otherwise = nombre : nombresDeUsuarios (xs, [], [])
---Indica si un nombre de usuario esta contenido en una lista de usuarios
-nombrePertenece :: String -> [Usuario] -> Bool
-nombrePertenece _ [] = False
-nombrePertenece nombre ((_,y):xs) = nombre == y || nombrePertenece nombre xs
+nombresDeUsuarios ((_, nombre):xs, _, _) = nombre : nombresDeUsuarios (quitar nombre xs, [], [])
+
+--quitar: Dados un String y una lista de Usuarios, devuelve una lista de usuarios cuyos nombres sean diferentes al String
+quitar :: String -> [Usuario] -> [Usuario]
+quitar _ [] = []
+quitar nombre (u : us) | nombre == nombreDeUsuario u = quitar nombre us
+                       | otherwise = u : (quitar nombre us)
 
 -- describir qué hace la función: Dada una Red Social, lee la lista de los usuarios y devuelve los nombres
 -- Si hay algun nombre repetido, lo devuelve una unica vez en la lista.
