@@ -82,13 +82,13 @@ publicacionesDe (_, _, publicacion : ps) usuario | (usuarioDePublicacion publica
 -- describir qué hace la función: .....
 publicacionesQueLeGustanA :: RedSocial -> Usuario -> [Publicacion]
 publicacionesQueLeGustanA (_, _, []) _ = []
-publicacionesQueLeGustanA (_, _, (publicacion : ps)) u | gustaPublicacion u publicacion = publicacion : publicacionesQueLeGustanA ([], [], ps) u
+publicacionesQueLeGustanA (_, _, (publicacion : ps)) u | pertenece u (likesDePublicacion publicacion) = publicacion : publicacionesQueLeGustanA ([], [], ps) u
                                                        | otherwise = publicacionesQueLeGustanA ([], [], ps) u
 
---Ve la lista de usuarios a los que les gusta una publicacion e indica si un usuario dado esta dentro de esa lista
-gustaPublicacion :: Usuario -> Publicacion -> Bool
-gustaPublicacion _ (_, _, []) = False
-gustaPublicacion u (poster, _, (u1 : us)) = u == u1 || gustaPublicacion u (poster , [], us)
+--Dados un usuario y una lista de usuarios, indica si el usuario esta dentro de la lista
+pertenece :: Usuario -> [Usuario] -> Bool
+pertenece _ [] = False
+pertenece u (u1 : us) = u == u1 || pertenece u us
 
 -- describir qué hace la función: .....
 lesGustanLasMismasPublicaciones :: RedSocial -> Usuario -> Usuario -> Bool
@@ -98,9 +98,9 @@ lesGustanLasMismasPublicaciones red u1 u2 = (publicacionesQueLeGustanA red u1) =
 tieneUnSeguidorFiel :: RedSocial -> Usuario -> Bool
 tieneUnSeguidorFiel (_, _, []) _ = False
 tieneUnSeguidorFiel (_, _, (u1, _, us) : ps) u | u1 == u && us == [] = False
-                                               | u1 == u && (head us) == u1 = tieneUnSeguidorFiel ([], [], ((u1, [], (tail us)) : ps)) u
+                                               | u1 == u && (head us) == u1 = tieneUnSeguidorFiel ([], [], (u1, [], (tail us)) : ps) u
                                                | u1 == u && publicacionesDe ([], [], (u1, [], us) : ps) u1 == esSeguidorFiel  = True
-                                               | otherwise = tieneUnSeguidorFiel ([], [], ((u1, [], (tail us)) : ps)) u1
+                                               | otherwise = tieneUnSeguidorFiel ([], [], (u1, [], (tail us)) : ps) u1
                                                where esSeguidorFiel = publicacionesQueLeGustanA ([], [], publicacionesDe ([], [], ((u1, [], us) : ps)) u) (head us)
 
 -- describir qué hace la función: .....
