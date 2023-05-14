@@ -38,12 +38,13 @@ likesDePublicacion (_, _, us) = us
 
 nombresDeUsuarios :: RedSocial -> [String]
 nombresDeUsuarios ([], _, _) = []
-nombresDeUsuarios (((_, nombre):xs), _, _) | nombrePertenece nombre xs = nombresDeUsuarios (xs, [], [])
-                                           | otherwise = nombre : nombresDeUsuarios (xs, [], [])
---Indica si un nombre de usuario esta contenido en una lista de usuarios
-nombrePertenece :: String -> [Usuario] -> Bool
-nombrePertenece _ [] = False
-nombrePertenece nombre ((_,y):xs) = nombre == y || nombrePertenece nombre xs
+nombresDeUsuarios (u : us, _, _) = nombreDeUsuario u : nombresDeUsuarios (quitar (nombreDeUsuario u) us, [], [])
+
+--quitar: Dados un String y una lista de Usuarios, devuelve una lista de usuarios cuyos nombres sean diferentes al String
+quitar :: String -> [Usuario] -> [Usuario]
+quitar _ [] = []
+quitar nombre (u : us) | nombre == nombreDeUsuario u = quitar nombre us
+                       | otherwise = u : (quitar nombre us)
 
 -- describir qué hace la función: Dada una Red Social, lee la lista de los usuarios y devuelve los nombres
 -- Si hay algun nombre repetido, lo devuelve una unica vez en la lista.
@@ -75,32 +76,37 @@ estaRobertoCarlos (u:us, relaciones, _) = cantidadDeAmigos ([], relaciones, []) 
 -- describir qué hace la función: .....
 publicacionesDe :: RedSocial -> Usuario -> [Publicacion]
 publicacionesDe (_, _, []) _ = []
-publicacionesDe (_, _, ((u, p, us) : ps)) usuario | u == usuario = (u, p, us) : publicacionesDe ([], [], ps) usuario
-                                                  | otherwise = publicacionesDe ([], [], ps) usuario
+publicacionesDe (_, _, publicacion : ps) usuario | (usuarioDePublicacion publicacion) == usuario = publicacion : publicacionesDe ([], [], ps) usuario
+                                                 | otherwise = publicacionesDe ([], [], ps) usuario
 
 -- describir qué hace la función: .....
 publicacionesQueLeGustanA :: RedSocial -> Usuario -> [Publicacion]
 publicacionesQueLeGustanA (_, _, []) _ = []
-publicacionesQueLeGustanA (_, _, (publicacion : ps)) u | gustaPublicacion u publicacion = publicacion : publicacionesQueLeGustanA ([], [], ps) u
+publicacionesQueLeGustanA (_, _, (publicacion : ps)) u | pertenece u (likesDePublicacion publicacion) = publicacion : publicacionesQueLeGustanA ([], [], ps) u
                                                        | otherwise = publicacionesQueLeGustanA ([], [], ps) u
 
---Ve la lista de usuarios a los que les gusta una publicacion e indica si un usuario dado esta dentro de esa lista
-gustaPublicacion :: Usuario -> Publicacion -> Bool
-gustaPublicacion _ (_, _, []) = False
-gustaPublicacion u (poster, _, (u1 : us)) = u == u1 || gustaPublicacion u (poster , [], us)
+--Dados un usuario y una lista de usuarios, indica si el usuario esta dentro de la lista
+pertenece :: Usuario -> [Usuario] -> Bool
+pertenece _ [] = False
+pertenece u (u1 : us) = u == u1 || pertenece u us
 
 -- describir qué hace la función: .....
 lesGustanLasMismasPublicaciones :: RedSocial -> Usuario -> Usuario -> Bool
 lesGustanLasMismasPublicaciones red u1 u2 = (publicacionesQueLeGustanA red u1) == (publicacionesQueLeGustanA red u2)
 
 -- describir qué hace la función: .....
---Use us para representar la secuencia de usuarios en vez de (x : xs) para poder contemplar el caso de que sea vacia
 tieneUnSeguidorFiel :: RedSocial -> Usuario -> Bool
 tieneUnSeguidorFiel (_, _, []) _ = False
-tieneUnSeguidorFiel (_, _, ((u1, _, us) : ps)) u | u1 == u && us == [] = False
-                                                 | u1 == u && publicacionesDe ([], [], (u1, [], us) : ps) u1 == publicacionesQueLeGustanA ([], [], (u1, [], us) : ps) (head us) = True
-                                                 | otherwise = tieneUnSeguidorFiel ([], [], ((u1, [], (tail us)) : ps)) u1
+tieneUnSeguidorFiel (_, _, (u1, _, us) : ps) u | u1 == u && us == [] = False
+                                               | u1 == u && (head us) == u1 = tieneUnSeguidorFiel ([], [], (u1, [], (tail us)) : ps) u
+                                               | u1 == u && publicacionesDe ([], [], (u1, [], us) : ps) u1 == esSeguidorFiel  = True
+                                               | otherwise = tieneUnSeguidorFiel ([], [], (u1, [], (tail us)) : ps) u1
+                                               where esSeguidorFiel = publicacionesQueLeGustanA ([], [], publicacionesDe ([], [], ((u1, [], us) : ps)) u) (head us)
 
 -- describir qué hace la función: .....
 existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
-existeSecuenciaDeAmigos = undefined
+existeSecuenciaDeAmigos (_, [], _) _ _ = False
+existeSecuenciaDeAmigos (_, ((u1, u2) : rs), _) inu outu | (u1, u2) == (inu, outu) || (u1, u2) == (outu, inu) = True
+                                                         | u1 == inu && existeSecuenciaDeAmigos ([], rs, []) u2 outu = True
+                                                         | u2 == inu && existeSecuenciaDeAmigos ([], rs, []) u1 outu = True
+                                                         | otherwise = existeSecuenciaDeAmigos ([], rs ++ [(u1, u2)], []) inu outu
