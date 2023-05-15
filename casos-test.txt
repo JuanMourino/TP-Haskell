@@ -29,7 +29,7 @@ red0 = ([], [], [])
 red1 = ([u1, u2, u3, u4, u5, u6, u7], [r1, r2, r3, r4, r5, r6], [p1_1, p1_2, p1_3])
 --Deberia dar True Roberto Carlos con 5 amigos, seguidor fiel para u1 y le gustan mismas publicaciones con (u1, u3)
 
-red2 = ([u1, u2, u3, u4, u5], [r1, r2, r3, r4, r5], [p1_1, p1_2, p1_f]
+red2 = ([u1, u2, u3, u4, u5], [r1, r2, r3, r4, r5], [p1_1, p1_2, p1_f])
 --Deberia dar False Roberto Carlos, seguidor fiel para u1 y le gustan mismas publicaciones con (u1, u3)
 --Deberia dar True para le gustan mismas publicaciones con (u2, u3)
 
