@@ -5,6 +5,7 @@ u3 = (3, "Jazmin")
 u4 = (4, "Nico")
 u5 = (5, "Marco")
 u6 = (6, "Juan")
+u7 = (7, "Sin amigos")
 
 
 Relaciones:
@@ -21,11 +22,12 @@ p1-1 = (u1, "1ra publicacion", [u1, u2, u3, u4])
 p1-2 = (u1, "2da publicacion", [u1, u3, u2])
 p1-3 = (u1, "3ra publicacion", [u1, u3])
 p1-f = (u1, "Falso positivo", [u1])
-p2-1 = (u2, "1ra pub2",  [
+p2-1 = (u2, "1ra pub2",  [])
 
 Redes:
-red1 = ([u1, u2, u3, u4, u5, u6], [r1, r2, r3, r4, r5, r6], [p1, p2, p3])
+red1 = ([u1, u2, u3, u4, u5, u6, u7], [r1, r2, r3, r4, r5, r6], [p1, p2, p3])
 --Con red1 deberia dar True Roberto Carlos con 5 amigos, seguidor fiel para u1 y le gustan mismas publicaciones con (u1, u3)
 red2 = ([u1, u2, u3, u4, u5], [r1, r2, r3, r4, r5], [p1, p2, pf]
 --Con red2 deberia dar False Roberto Carlos, seguidor fiel para u1 y le gustan mismas publicaciones con (u1, u3)
 --Deberia dar True para le gustan mismas publicaciones con (u2, u3)
+red0 = ([], [], [])
