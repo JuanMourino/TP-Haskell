@@ -1,10 +1,10 @@
 Usuarios:
 u1 = (1, "Juan")
 u2 = (2, "Sofia")
-u3 = (3, "Juan")
+u3 = (3, "Jazmin")
 u4 = (4, "Nico")
 u5 = (5, "Marco")
-u6 = (6, "Jazmin")
+u6 = (6, "Juan")
 
 
 Relaciones:
@@ -17,10 +17,11 @@ r5 = (u1, u5)
 r6 = (u1, u6)
 
 Publicaciones:
-p1 = (u1, "1ra publicacion", [u1, u2, u3, u4])
-p2 = (u1, "2da publicacion", [u1, u3, u2])
-p3 = (u1, "3ra publicacion", [u1, u3])
-pf = (u1, "Falso positivo", [u1])
+p1-1 = (u1, "1ra publicacion", [u1, u2, u3, u4])
+p1-2 = (u1, "2da publicacion", [u1, u3, u2])
+p1-3 = (u1, "3ra publicacion", [u1, u3])
+p1-f = (u1, "Falso positivo", [u1])
+p2-1 = (u2, "1ra pub2",  [
 
 Redes:
 red1 = ([u1, u2, u3, u4, u5, u6], [r1, r2, r3, r4, r5, r6], [p1, p2, p3])
