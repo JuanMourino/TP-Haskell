@@ -16,7 +16,7 @@ tests = test [
     "cantAmigos sin amigos"           ~: (cantidadDeAmigos red1 u7)                          ~?= 0,
     "cantAmigos con amigos"           ~: (cantidadDeAmigos red1 u1)                          ~?= 5,
 
-    "Usuario con mas amigos mas de 1"        ~: (usuarioConMasAmigos red3)                   ~?= u1,
+    "Usuario con mas amigos mas de 1"        ~: expectAny (usuarioConMasAmigos red3)          [u1, u2, u3],
     "Usuario con mas amigos uno solo"        ~: (usuarioConMasAmigos red1)                   ~?= u1,
 
     "Esta RobertoCarlos"                     ~: (estaRobertoCarlos red1)                     ~?= True,
@@ -39,6 +39,7 @@ tests = test [
     "Existe Secuencia De amigos"             ~: (existeSecuenciaDeAmigos red4 u1 u5)         ~?= True,
     "No existe Secuencia De amigos"          ~: (existeSecuenciaDeAmigos red5 u1 u5)         ~?= False]
 
+expectAny actual expected = elem actual expected ~? ("expected any of: " ++ show expected ++ "\n but got: " ++ show actual)
 --Usuarios:
 u1 = (1, "Juan")
 u2 = (2, "Sofia")
