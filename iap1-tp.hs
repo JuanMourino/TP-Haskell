@@ -64,7 +64,7 @@ cantidadDeAmigos (_, (pu, su) : xs, _) u | pu == u || su == u = 1 + cantidadDeAm
 -- describir qué hace la función: .....
 usuarioConMasAmigos :: RedSocial -> Usuario
 usuarioConMasAmigos ([usuario], _, _) = usuario
-usuarioConMasAmigos ((u1 : u2 : us), relaciones, _) | (cantidadDeAmigos ((u1: u2: us), relaciones, []) u1) > (cantidadDeAmigos ((u1: u2: us), relaciones, []) u2) = usuarioConMasAmigos ((u1 : us), relaciones, [])
+usuarioConMasAmigos ((u1 : u2 : us), relaciones, _) | (cantidadDeAmigos ((u1: u2: us), relaciones, []) u1) >= (cantidadDeAmigos ((u1: u2: us), relaciones, []) u2) = usuarioConMasAmigos ((u1 : us), relaciones, [])
                                                     | otherwise = usuarioConMasAmigos ((u2 : us), relaciones, [])
 
 -- describir qué hace la función: .....
@@ -107,6 +107,8 @@ tieneUnSeguidorFiel (_, _, (u1, _, us) : ps) u | u1 == u && us == [] = False
 existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
 existeSecuenciaDeAmigos (_, [], _) _ _ = False
 existeSecuenciaDeAmigos (_, ((u1, u2) : rs), _) inu outu | (u1, u2) == (inu, outu) || (u1, u2) == (outu, inu) = True
+                                                         | amigosDe ([], ((u1, u2) : rs), []) inu == [] = False
                                                          | u1 == inu && existeSecuenciaDeAmigos ([], rs, []) u2 outu = True
                                                          | u2 == inu && existeSecuenciaDeAmigos ([], rs, []) u1 outu = True
+                                                         | inu == u1 || inu == u2 = existeSecuenciaDeAmigos ([], rs, []) inu outu
                                                          | otherwise = existeSecuenciaDeAmigos ([], rs ++ [(u1, u2)], []) inu outu
