@@ -1,0 +1,98 @@
+type Usuario = (Integer, String) -- (id, nombre)
+type Relacion = (Usuario, Usuario) -- usuarios que se relacionan
+type Publicacion = (Usuario, String, [Usuario]) -- (usuario que publica, texto publicado, likes)
+type RedSocial = ([Usuario], [Relacion], [Publicacion])
+
+
+-- Funciones basicas
+
+usuarios :: RedSocial -> [Usuario]
+usuarios (us, _, _) = us
+
+relaciones :: RedSocial -> [Relacion]
+relaciones (_, rs, _) = rs
+
+publicaciones :: RedSocial -> [Publicacion]
+publicaciones (_, _, ps) = ps
+
+idDeUsuario :: Usuario -> Integer
+idDeUsuario (id, _) = id 
+
+nombreDeUsuario :: Usuario -> String
+nombreDeUsuario (_, nombre) = nombre 
+
+usuarioDePublicacion :: Publicacion -> Usuario
+usuarioDePublicacion (u, _, _) = u
+
+likesDePublicacion :: Publicacion -> [Usuario]
+likesDePublicacion (_, _, us) = us
+
+pertenece :: (Eq t) => t -> [t] -> Bool
+pertenece _ [] = False
+pertenece y (x:xs) | y == x = True
+                   | otherwise = pertenece y xs
+
+longitud :: [t] -> Int
+longitud [] = 0
+longitud (_:xs) = 1 + longitud xs
+
+
+-- EJERCICIO 1
+-- Dada una red social, devuelve una lista con todos los nombres de usuario existentes
+
+nombresDeUsuarios :: RedSocial -> [String]
+nombresDeUsuarios ([], _, _) = []
+nombresDeUsuarios ((x:xs), rels, pubs) | pertenece (nombreDeUsuario x) (nombresDeUsuarios (xs, rels, pubs)) = nombresDeUsuarios (xs, rels, pubs)
+                                       | otherwise = nombreDeUsuario x : (nombresDeUsuarios (xs, rels, pubs))
+
+-- EJERCICIO 2
+-- Dada una red social y un usuario de esta, devuelve su lista de amigos
+
+amigosDe :: RedSocial -> Usuario -> [Usuario]
+amigosDe (_, [], _) _ = []
+amigosDe (us, (pu, su) : xs, pubs) u | pu == u = su : amigosDe (us, xs, pubs) u
+                                     | su == u = pu : amigosDe (us, xs, pubs) u
+                                     | otherwise = amigosDe (us, xs, pubs) u
+
+-- EJERCICIO 3
+-- Dada una red social y un usuario de esta, devuelve su cantidad de amigos
+
+cantidadDeAmigos :: RedSocial -> Usuario -> Int
+cantidadDeAmigos red u = longitud (amigosDe red u)
+
+-- EJERCICIO 4
+-- Dada una red social con al menos un usuario, devuelve el usuario con más amigos
+
+usuarioConMasAmigos :: RedSocial -> Usuario
+usuarioConMasAmigos ([u], _, _) = u
+usuarioConMasAmigos ((u:us), rels, pubs) | cantidadDeAmigos ((u:us), rels, pubs) u > cantidadDeAmigos ((u:us), rels, pubs) (usuarioConMasAmigos (us, rels, pubs)) = u
+                                         | otherwise = usuarioConMasAmigos (us, rels, pubs)
+
+-- EJERCICIO 5
+-- Dada una red social, dice si hay un usuario con mas de un millon de amigos
+
+estaRobertoCarlos :: RedSocial -> Bool
+estaRobertoCarlos ([], _, _) = False
+estaRobertoCarlos ((u:us), rels, pubs) = cantidadDeAmigos ((u:us), rels, pubs) u > 1000000 || estaRobertoCarlos (us, rels, pubs)
+
+-- EJERCICIO 6 
+-- Dada una red social y un usuario de esta, devuelve la lista de todas sus publicaciones
+
+publicacionesDe :: RedSocial -> Usuario -> [Publicacion]
+publicacionesDe (_, _, []) _ = []
+publicacionesDe (us, rels, (p:ps)) u | usuarioDePublicacion p == u = p : (publicacionesDe (us, rels, ps) u)
+                                     | otherwise = (publicacionesDe (us, rels, ps) u)
+
+-- EJERCICIO 7
+-- Dada una red social y un usuario de esta, devuelve la lista de todas las publicaciones que le gustan
+
+publicacionesQueLeGustanA :: RedSocial -> Usuario -> [Publicacion]
+publicacionesQueLeGustanA (_, _, []) _ = []
+publicacionesQueLeGustanA (us, rels, (p:ps)) u | pertenece u (likesDePublicacion p) = p : (publicacionesQueLeGustanA (us, rels, ps) u)
+                                               | otherwise = publicacionesQueLeGustanA (us, rels, ps) u
+
+-- EJERCICIO 8
+-- Dada una red social y dos usuarios de esta, dice si les gustan las mismas publicacionesn 
+
+lesGustanLasMismasPublicaciones :: RedSocial -> Usuario -> Usuario -> Bool
+lesGustanLasMismasPublicaciones red u1 u2 = publicacionesQueLeGustanA red u1 == publicacionesQueLeGustanA red u2
