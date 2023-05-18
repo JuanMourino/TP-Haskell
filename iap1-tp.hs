@@ -1,4 +1,3 @@
-import Text.XHtml (red)
 -- Completar con los datos del grupo
 --
 -- Nombre de Grupo: Algo1Francia2
@@ -79,7 +78,7 @@ usuarioConMasAmigos ((u1 : u2 : us), relaciones, _) | (cantidadDeAmigos red u1) 
 -- EJERCICIO 5
 --Dada una red social indica verdadero o falso segun si hay una persona con 5 o mas amigos o no, respectivamente
 estaRobertoCarlos :: RedSocial -> Bool
-estaRobertoCarlos red = cantidadDeAmigos red (usuarioConMasAmigos red) >= 5
+estaRobertoCarlos red = cantidadDeAmigos red (usuarioConMasAmigos red) >= 10
 
 -- EJERCICIO 6
 -- Dada una red social y un usuario devuelve una lista con todas las publicaciones cuyo usuario de publicacion sea el usuario ingresado

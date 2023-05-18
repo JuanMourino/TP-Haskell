@@ -19,7 +19,7 @@ tests = test [
     "Usuario con mas amigos mas de 1"        ~: expectAny (usuarioConMasAmigos red3)          [u1, u2, u3],
     "Usuario con mas amigos uno solo"        ~: (usuarioConMasAmigos red1)                   ~?= u1,
 
-    "Esta RobertoCarlos"                     ~: (estaRobertoCarlos red1)                     ~?= True,
+    "Esta RobertoCarlos"                     ~: (estaRobertoCarlos red6)                     ~?= True,
     "No esta Roberto Carlos"                 ~: (estaRobertoCarlos red2)                     ~?= False,
     "No esta nadie"                          ~: (estaRobertoCarlos red0)                     ~?= False,
 
@@ -48,6 +48,11 @@ u4 = (4, "Nico")
 u5 = (5, "Marco")
 u6 = (6, "Juan")
 u7 = (7, "Sin amigos")
+u8 = (8, "Mati")
+u9 = (9, "Santi")
+u10 = (10, "More")
+u11 = (11, "Esteban")
+u12 = (12, "Maira")
 
 
 --Relaciones:
@@ -56,11 +61,16 @@ r2 = (u3, u1)
 r3 = (u1, u4)
 r4 = (u2, u3)
 r5 = (u1, u5)
-r6 = (u1, u6) --Cambiando Roberto Carlos por 5 amigos, da diferente con o sin r6
+r6 = (u1, u6)
 r7 = (u3, u2)
 r8 = (u3, u4)
 r9 = (u1, u6)
 r10 = (u5, u4)
+r11 = (u1, u8)
+r12 = (u9, u1)
+r13 = (u10, u1)
+r14 = (u1, u11)
+r15 = (u12, u1)
 
 --Publicaciones:
 p1d1 = (u1, "1ra publicacion", [u1, u2, u3, u4])
@@ -80,3 +90,4 @@ red2 = ([u1, u2, u3, u4, u5], [r1, r2, r3, r4, r5], [p1d1, p1d2, p1df])
 red3 = ([u1, u2 ,u3 ,u4], [r1, r2, r4],[p1d4])
 red4 = ([u1, u2, u3, u4, u5, u6, u7], [r10, r1, r8, r7, r9], [])
 red5 = ([u1, u2, u3, u4, u5, u6, u7], [r10, r1, r7, r9], [])
+red6 = ([u1, u2, u3, u4, u5, u6, u8, u9, u10, u11, u12], [r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15], [])
