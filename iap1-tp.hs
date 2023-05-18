@@ -1,3 +1,4 @@
+import Text.XHtml (red)
 -- Completar con los datos del grupo
 --
 -- Nombre de Grupo: Algo1Francia2
@@ -59,24 +60,26 @@ amigosDe (_, (pu, su) : xs, _) u | pu == u = su : amigosDe ([], xs, []) u
 --EJERCICIO 3
 --Dada una red social y un usuario, devuelve la cantidad de usuarios que estan en una relacion con en usuario ingresado
 cantidadDeAmigos :: RedSocial -> Usuario -> Int
-cantidadDeAmigos (_, [], _) _ = 0
-cantidadDeAmigos (_, (pu, su) : xs, _) u | pu == u || su == u = 1 + cantidadDeAmigos ([], xs, []) u
-                                         | otherwise = cantidadDeAmigos ([], xs, []) u
+cantidadDeAmigos red u = longitud (amigosDe red u)
+
+--Funcion auxiliar 'longitud' Dada una lista, devuelve la cantidad de elementos que tiene
+longitud :: [t] -> Int
+longitud [] = 0
+longitud (x : xs) = 1 + longitud xs
 
 -- EJERCICIO 4
 -- Dada una red social, devuelve al usuario que este en mas relaciones dentro de esta red
 --Si hay mas de un usuario con la mayor cantidad de amigos, devuelve el primero
 usuarioConMasAmigos :: RedSocial -> Usuario
 usuarioConMasAmigos ([usuario], _, _) = usuario
-usuarioConMasAmigos ((u1 : u2 : us), relaciones, _) | (cantidadDeAmigos ((u1: u2: us), relaciones, []) u1) >= (cantidadDeAmigos ((u1: u2: us), relaciones, []) u2) = usuarioConMasAmigos ((u1 : us), relaciones, [])
+usuarioConMasAmigos ((u1 : u2 : us), relaciones, _) | (cantidadDeAmigos red u1) >= (cantidadDeAmigos red u2) = usuarioConMasAmigos ((u1 : us), relaciones, [])
                                                     | otherwise = usuarioConMasAmigos ((u2 : us), relaciones, [])
+                                                    where red = ((u1:u2:us), relaciones, [])
 
 -- EJERCICIO 5
 --Dada una red social indica verdadero o falso segun si hay una persona con 5 o mas amigos o no, respectivamente
 estaRobertoCarlos :: RedSocial -> Bool
-estaRobertoCarlos (_, [], _) = False
-estaRobertoCarlos ([], _, _) = False
-estaRobertoCarlos (u:us, relaciones, _) = cantidadDeAmigos ([], relaciones, []) u >= 1000000 || estaRobertoCarlos (us, relaciones, [])
+estaRobertoCarlos red = cantidadDeAmigos red (usuarioConMasAmigos red) >= 5
 
 -- EJERCICIO 6
 -- Dada una red social y un usuario devuelve una lista con todas las publicaciones cuyo usuario de publicacion sea el usuario ingresado
